@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Simple Chat App</title>
+    <style>
+      body { font: 13px Helvetica, Arial; }
+      form#chat-form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form#change_room { margin: 10px 0; padding: 3px; }
+      form#change_room input { background: #00909e; color: #eee; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: 0.5%; }
+      form button { width: 8%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+      <body>
+    <div id="container">
+      <form id="change_room">
+        <input id="room_name" autocomplete="off" />
+        <button>Change Room</button>
+      </form>
+      <ul id="messages"></ul>
+      <form action="" id="chat-form">
+        <input id="m" autocomplete="off" />
+        <button>Send</button>
+      </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      var room = 'default';
+      document.getElementById('chat-form').onsubmit = function(e) {
+        e.preventDefault();
+        socket.emit('chat message', document.getElementById('m').value);
+        document.getElementById('m').value = '';
+        return false;
+      };
+
+      document.getElementById('change_room').onsubmit = function(e) {
+        e.preventDefault();
+        if(document.getElementById('room_name').value != '') {
+          socket.emit('join', document.getElementById('room_name').value);
+        }
+        document.getElementById('messages').innerHTML = '';
+        return false;
+      }
+
+      socket.on('chat message', function(msg) {
+        document.getElementById('messages').appendChild(document.createElement("li")).appendChild(document.createTextNode(msg));
+      });
+    </script>
+  </body>
+</html>
+

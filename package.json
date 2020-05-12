@@ -1,0 +1,12 @@
+{
+  "name": "simple-chat-app",
+  "version": "1.0.0",
+  "description": "A simple chat app.",
+  "main": "index.js",
+  "author": "Anay Karnik",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
