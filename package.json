@@ -1,8 +1,15 @@
 {
   "name": "simple-chat-app",
   "version": "1.0.0",
-  "description": "A simple chat app.",
+  "engines": {
+    "node": "12.x"
+  },
+  "description": "A simple chat app with rooms.",
   "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
   "author": "Anay Karnik",
   "license": "MIT",
   "dependencies": {

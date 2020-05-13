@@ -4,6 +4,8 @@
     <title>Simple Chat App</title>
     <style>
       body { font: 13px Helvetica, Arial; }
+      #container { width: 40%; position: fixed; }
+      canvas { float: right; border: 2px solid #000000; }
       form#chat-form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
       form#change_room { margin: 10px 0; padding: 3px; }
       form#change_room input { background: #00909e; color: #eee; }
@@ -14,18 +16,20 @@
       #messages li:nth-child(odd) { background: #eee; }
     </style>
   </head>
-      <body>
+  <body>
+    <form id="change_room">
+      <input id="room_name" autocomplete="off" />
+      <button>Change Room</button>
+    </form>
     <div id="container">
-      <form id="change_room">
-        <input id="room_name" autocomplete="off" />
-        <button>Change Room</button>
-      </form>
       <ul id="messages"></ul>
       <form action="" id="chat-form">
         <input id="m" autocomplete="off" />
         <button>Send</button>
       </form>
     </div>
+    <canvas id="board" width="900" height="700">
+    </canvas>
     <script src="/socket.io/socket.io.js"></script>
     <script>
       var socket = io();
@@ -49,6 +53,42 @@
       socket.on('chat message', function(msg) {
         document.getElementById('messages').appendChild(document.createElement("li")).appendChild(document.createTextNode(msg));
       });
+      
+      var board = document.getElementById("board");
+      var ctx = board.getContext("2d");
+      var brushSize = 5;
+      var isDrawing = false;
+      
+      var drawCircle = (x, y, r) => {
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      board.addEventListener('mousedown', e => {
+        isDrawing = true;
+      });
+
+      board.addEventListener('mouseup', e => {
+        isDrawing = false;
+      });
+
+      board.addEventListener('mousemove', e => {
+        if (isDrawing === true) {
+          var crect = board.getBoundingClientRect();
+
+          var posx = e.clientX - crect.left;
+          var posy = e.clientY - crect.top;
+
+          drawCircle(posx, posy, brushSize);
+          socket.emit('stroke', {x: posx, y: posy, r: brushSize});
+      }
+      });
+
+      socket.on('stroke', (circle) => {
+        drawCircle(circle.x, circle.y, circle.r);
+      });
+
     </script>
   </body>
 </html>

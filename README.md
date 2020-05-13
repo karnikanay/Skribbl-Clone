@@ -1,2 +1,2 @@
-# Simple-Chat-App
-A simple chat app with rooms
+# Skribbl-Clone
+An attempt to clone skribbl.io.
